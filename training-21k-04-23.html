@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Running Data Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="running-chart"></canvas>
+  <script>
+    const runningData = {
+      labels: ['April 15', 'April 9', 'April 8', 'April 4', 'April 1', 'March 30', 'March 28', 'March 21', 'March 7', 'March 4', 'February 28', 'March 2'],
+      datasets: [{
+        label: 'Running Distance (km)',
+        data: [6.63, 4.67, 4.48, 4.88, 4.74, 2.55, 6.7, 7.4, 6, 8, 4, 6],
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }, {
+        label: 'Running Time (hh:ss)',
+        data: [45*60, 30*60, 30*60, 31*60+6, 31*60+1, 19*60+30, 48*60+2, 49*60+22, 39*60+55, 53*60+47, 29*60+29, 44*60+2],
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        borderColor: 'rgba(255, 206, 86, 1)',
+        borderWidth: 1
+      }, {
+        label: 'Running Pace (min/km)',
+        data: [6.47, 6.25, 6.42, 6.22, 6.32, 7.38, 7.14, 6.44, 6.4, 6.44, 7.24, 7.24],
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    };
+
+    // normalize running time data
+    const maxDistance = Math.max(...runningData.datasets[0].data);
+    const maxPace = Math.max(...runningData.datasets[2].data);
+    const normalizedTime = runningData.datasets[1].data.map(time => (time / Math.max(...runningData.datasets[1].data)) * Math.max(maxDistance, maxPace));
+    runningData.datasets[1].data = normalizedTime;
+
+    const options = {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    };
+
+    const ctx = document.getElementById('running-chart').getContext('2d');
+    const runningChart = new Chart(ctx, {
+      type: 'line',
+      data: runningData,
+      options: options
+    });
+  </script>
+</body>
+</html>
